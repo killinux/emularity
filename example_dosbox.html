@@ -38,8 +38,9 @@
                                                    DosBoxLoader.nativeResolution(640, 480),
                                                    DosBoxLoader.mountZip("c",
                                                                          DosBoxLoader.fetchFile("Game File",
-                                                                                                "examples/DoomV1.9sw1995idSoftwareInc.action.zip")),
-                                                   DosBoxLoader.startExe("doom.exe")))
+                                                                                                "examples/cskgd.zip")),
+                                                   //DosBoxLoader.startExe("doom.exe")))
+                                                   DosBoxLoader.startExe("qr")))
       emulator.start({ waitAfterDownloading: true });
 
       function locateAdditionalFiles(filename) {
