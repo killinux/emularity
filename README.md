@@ -1,5 +1,6 @@
 #hn:example_dosbox.html#
 
+test
 #emulators/em-dosbox/dosbox-sync.js#
 #emulators/em-dosbox/dosbox-sync.mem#
 #is from https://dos.zczc.cz/games/#
