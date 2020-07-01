@@ -54,3 +54,6 @@ It also utilizes [ES6-Promise](https://github.com/jakearchibald/es6-promise), a 
 * Should add browser-specific detections for unusual behaviors and volume/full-screen actions
 * Handling of aspect ratios, and their interaction with full-screen mode
 * Finish API for volume/mute/full-screen requests
+
+add by hao
+emmake make SUBTARGET=neogeo SOURCES=src/mame/drivers/neogeo.cpp
