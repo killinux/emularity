@@ -40,13 +40,6 @@
                                                                           JSMAMELoader.fetchFile("Game File",
                                                                                                  "emulators/roms/tengai.zip"))))
       emulator.start({ waitAfterDownloading: true });
-      console.log("..emulator:");
-      console.log(emulator);
-      console.log(window.gameData);
-        function test(){
-           console.log(window.gameData); 
-        }
     </script>
-    <input value="test" type=button onclick='test()' />
   </body>
 </html>

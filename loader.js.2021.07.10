@@ -854,7 +854,6 @@ var Module = null;
     */
 
    function PCELoader() {
-     console.log("hao PCELoader init----->");
      var config = Array.prototype.reduce.call(arguments, extend);
      config.emulator_arguments = ["-c", "/emulator/pce-"+ config.pceModel +".cfg"];
      if (config.extra_pce_args && config.extra_pce_args.length > 0) {
@@ -1005,7 +1004,7 @@ var Module = null;
                 locateFile: game_data.locateAdditionalJS,
                 wasmBinary: game_data.wasmBinary,
                 preInit: function () {
-                           // Re-initialize BFS to just use the writable in-memory storage. //haohao
+                           // Re-initialize BFS to just use the writable in-memory storage.
                            BrowserFS.initialize(game_data.fs);
                            var BFS = new BrowserFS.EmscriptenFS();
                            // Mount the file system into Emscripten.
@@ -1372,7 +1371,6 @@ var Module = null;
        }
 
        var k, c, game_data;
-       this.gameData=game_data;//haohao
        setupSplash(canvas, splash, options);
        drawsplash();
 
@@ -1384,19 +1382,16 @@ var Module = null;
          loading = Promise.resolve(loadFiles);
        }
        loading.then(function (_game_data) {
-                      console.log("haohao: Emulator  loading.....");
                       return new Promise(function(resolve, reject) {
                         var inMemoryFS = new BrowserFS.FileSystem.InMemory();
                         // If the browser supports IndexedDB storage, mirror writes to that storage
                         // for persistence purposes.
                         if (BrowserFS.FileSystem.IndexedDB.isAvailable()) {
-                          console.log("haohao:indexedDb is available");
                           var AsyncMirrorFS = BrowserFS.FileSystem.AsyncMirror,
                               IndexedDB = BrowserFS.FileSystem.IndexedDB;
                           deltaFS = new AsyncMirrorFS(inMemoryFS,
                                                       new IndexedDB(function(e, fs) {
                                                                       if (e) {
-                                                                        console.log("hao:fs inMemory");
                                                                         // we probably weren't given access;
                                                                         // private window for example.
                                                                         // don't fail completely, just don't
@@ -1404,7 +1399,6 @@ var Module = null;
                                                                         deltaFS = inMemoryFS;
                                                                         finish();
                                                                       } else {
-                                                                        console.log("hao:fs sync storage");
                                                                         // Initialize deltaFS by copying files from async storage to sync storage.
                                                                         deltaFS.initialize(function (e) {
                                                                                              if (e) {
@@ -1420,7 +1414,7 @@ var Module = null;
                         } else {
                           finish();
                         }
-//alert("haha");
+
                         function finish() {
                           game_data = _game_data;
 
@@ -1452,7 +1446,6 @@ var Module = null;
                                 };
                               }
                               function saveat(filename) {
-                                console.log("haohao: saveat:"+filename);
                                 return function (data) {
                                   if (data !== null) {
                                     if (filename.includes('/')) {
@@ -1464,7 +1457,6 @@ var Module = null;
                                         }
                                       }
                                     }
-                                    
                                     game_data.fs.writeFileSync('/'+ filename, new Buffer(data), null, flag_w, 0x1a4);
                                   }
                                 };
@@ -1488,10 +1480,9 @@ var Module = null;
                               Promise.all(promises).then(resolve, reject);
                             }
                           });
-                        }//finish() end
-
+                        }
                       });
-                    })//loading...end 
+                    })
               .then(function (game_files) {
                       if (!game_data || splash.failed_loading) {
                         return null;
@@ -1517,8 +1508,6 @@ var Module = null;
                       splash.failed_loading = true;
                     })
               .then(function () {
-                      alert("hehe2");
-                      console.log("hao:game_data end.....hehe2."); 
                       if (!game_data || splash.failed_loading) {
                         return null;
                       }
@@ -1576,9 +1565,6 @@ var Module = null;
                       if (!game_data || splash.failed_loading) {
                         return null;
                       }
-                      alert("hehe1");
-                      console.log("hao:game_data end......");
-                      window.gameData=game_data;//haohao
                       if ("runner" in game_data) {
                         if (!runner) {
                           runner = setup_runner();
