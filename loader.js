@@ -356,6 +356,7 @@ var Module = null;
      }
 
      function get_mame_files(cfgr, metadata, modulecfg, filelist) {
+       console.log("haohao: get_mame_files --->");
        var files = [],
            bios_files = modulecfg['bios_filenames'];
        bios_files.forEach(function (fname, i) {
