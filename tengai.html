@@ -32,10 +32,11 @@
       console.log("-tengai---->");
       var emulator = new Emulator(document.querySelector("#canvas"),
                                   null,
-                                  new JSMAMELoader(JSMAMELoader.driver("tengai"),
+                                  new JSMAMELoader(JSMAMELoader.driver("tengaij"),
                                                    JSMAMELoader.nativeResolution(256, 256),
                                                    JSMAMELoader.scale(3),
-                                                   JSMAMELoader.emulatorJS("emulators/mame/mamepsikyo.js"),
+                                                   JSMAMELoader.emulatorJS("emulators/mame/psikyo.js?v=4"),
+                                                   JSMAMELoader.extraArgs(['-verbose']),
                                                    JSMAMELoader.mountFile("tengai.zip",
                                                                           JSMAMELoader.fetchFile("Game File",
                                                                                                  "emulators/roms/tengai.zip"))))

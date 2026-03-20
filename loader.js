@@ -1000,7 +1000,7 @@ var Module = null;
      Module = { arguments: game_data.emulator_arguments,
                 screenIsReadOnly: true,
                 print: function (text) { console.log(text); },
-                printErr: function (text) { console.log(text); },
+                printErr: function (text) { console.error('[MAME]', text); },
                 canvas: canvas,
                 noInitialRun: false,
                 locateFile: game_data.locateAdditionalJS,
@@ -1518,8 +1518,6 @@ var Module = null;
                       splash.failed_loading = true;
                     })
               .then(function () {
-                      alert("hehe2");
-                      console.log("hao:game_data end.....hehe2."); 
                       if (!game_data || splash.failed_loading) {
                         return null;
                       }
@@ -1577,7 +1575,7 @@ var Module = null;
                       if (!game_data || splash.failed_loading) {
                         return null;
                       }
-                      alert("hehe1");
+                     // alert("hehe1");
                       console.log("hao:game_data end......");
                       window.gameData=game_data;//haohao
                       if ("runner" in game_data) {
