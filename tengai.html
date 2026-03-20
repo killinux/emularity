@@ -21,14 +21,125 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>战国之刃</title>
+    <style>
+      #save-controls {
+        text-align: center;
+        margin: 8px auto;
+        font-family: sans-serif;
+        font-size: 14px;
+      }
+      #save-controls button {
+        margin: 0 4px;
+        padding: 4px 12px;
+        cursor: pointer;
+      }
+      #save-status {
+        margin-left: 10px;
+        color: #c80;
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
-    进入游戏后，按 “tab” 设置按键
+    进入游戏后，按 "tab" 设置按键
     <canvas id="canvas" style="width: 50%; height: 50%; display: block; margin: 0 auto;"></canvas>
+
+    <div id="save-controls">
+      槽位:
+      <select id="save-slot">
+        <option value="0">1</option>
+        <option value="1">2</option>
+        <option value="2">3</option>
+      </select>
+      <button onclick="exportSave()">📥 导出存档</button>
+      <button onclick="document.getElementById('save-file-input').click()">📤 导入存档</button>
+      <input type="file" id="save-file-input" accept=".sta" style="display:none" onchange="importSave(this)">
+      <span id="save-status"></span>
+    </div>
+    <p style="text-align:center;font-size:12px;color:#888">
+      游戏内按 <b>Shift+F7</b> 存档 &nbsp;|&nbsp; <b>F7</b> 读档 &nbsp;|&nbsp; 存完再点"导出存档"备份到本地
+    </p>
+
     <script type="text/javascript" src="es6-promise.js"></script>
     <script type="text/javascript" src="browserfs.min.js"></script>
     <script type="text/javascript" src="loader.js"></script>
     <script type="text/javascript">
+      var GAME_NAME = 'tengaij';
+
+      // MAME 存档目录候选路径（不同编译版本路径可能不同）
+      var SAVE_BASE_PATHS = [
+        '/sta/' + GAME_NAME + '/',
+        '/home/web_user/.mame/sta/' + GAME_NAME + '/',
+        '/mame/sta/' + GAME_NAME + '/',
+      ];
+
+      function findSavePath(slot) {
+        for (var i = 0; i < SAVE_BASE_PATHS.length; i++) {
+          try {
+            Module.FS.stat(SAVE_BASE_PATHS[i]);
+            return SAVE_BASE_PATHS[i] + slot + '.sta';
+          } catch(e) {}
+        }
+        // 默认路径，不一定存在
+        return SAVE_BASE_PATHS[0] + slot + '.sta';
+      }
+
+      function setStatus(msg, isError) {
+        var el = document.getElementById('save-status');
+        el.textContent = msg;
+        el.style.color = isError ? '#c00' : '#c80';
+        clearTimeout(el._timer);
+        el._timer = setTimeout(function() { el.textContent = ''; }, 3000);
+      }
+
+      function exportSave() {
+        if (typeof Module === 'undefined' || !Module.FS) {
+          setStatus('游戏尚未启动', true);
+          return;
+        }
+        var slot = document.getElementById('save-slot').value;
+        var path = findSavePath(slot);
+        try {
+          var data = Module.FS.readFile(path);
+          var blob = new Blob([data], { type: 'application/octet-stream' });
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = GAME_NAME + '_slot' + (parseInt(slot) + 1) + '.sta';
+          a.click();
+          setStatus('存档导出成功 ✓');
+        } catch(e) {
+          setStatus('未找到存档，请先在游戏内按 Shift+F7 保存（槽位' + (parseInt(slot) + 1) + '）', true);
+          console.log('[Save] 尝试路径:', path, '错误:', e.message);
+          // 打印所有候选路径，方便调试
+          SAVE_BASE_PATHS.forEach(function(p) {
+            try { console.log('[Save] 目录内容:', p, Module.FS.readdir(p)); }
+            catch(e2) { console.log('[Save] 目录不存在:', p); }
+          });
+        }
+      }
+
+      function importSave(input) {
+        if (typeof Module === 'undefined' || !Module.FS) {
+          setStatus('游戏尚未启动', true);
+          return;
+        }
+        var file = input.files[0];
+        if (!file) return;
+        var slot = document.getElementById('save-slot').value;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var path = findSavePath(slot);
+          // 确保目录存在
+          var dir = path.substring(0, path.lastIndexOf('/'));
+          try { Module.FS.mkdir(dir, 0o777); } catch(ex) {}
+          Module.FS.writeFile(path, new Uint8Array(e.target.result));
+          setStatus('导入成功，游戏内按 F7 读取槽位' + (parseInt(slot) + 1) + ' ✓');
+        };
+        reader.readAsArrayBuffer(file);
+        // 清空 input，以便同一文件可再次选择
+        input.value = '';
+      }
+
       console.log("-tengai---->");
       var emulator = new Emulator(document.querySelector("#canvas"),
                                   null,
@@ -41,13 +152,6 @@
                                                                           JSMAMELoader.fetchFile("Game File",
                                                                                                  "emulators/roms/tengai.zip"))))
       emulator.start({ waitAfterDownloading: true });
-      console.log("..emulator:");
-      console.log(emulator);
-      console.log(window.gameData);
-        function test(){
-           console.log(window.gameData); 
-        }
     </script>
-    <input value="test" type=button onclick='test()' />
   </body>
 </html>
